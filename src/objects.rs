@@ -94,7 +94,8 @@ impl Objects for client::Client {
     /// let mut acl_header = AclHeader::new();
     /// acl_header.insert_object_x_cos_acl(ObjectAcl::AuthenticatedRead);
     /// let client = Client::new("foo", "bar", "qcloudtest-1256650966", "ap-guangzhou");
-    /// let res = client.put_object("Cargo.toml", "Cargo.toml", mime::TEXT_PLAIN_UTF_8, Some(&acl_header)).await;
+    /// let data = std::fs::read("Cargo.toml").unwrap();
+    /// let res = client.put_object(mime::TEXT_PLAIN_UTF_8, "Cargo.toml", data, None).await;
     /// assert!(res.error_message.contains("403"));
     /// };
     /// ```
