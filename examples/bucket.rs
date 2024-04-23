@@ -1,10 +1,10 @@
 //! bucket管理
 
-use qcos::acl::{AclHeader, BucketAcl};
-use qcos::bucket::Bucket;
-use qcos::client::Client;
-use qcos::request::ErrNo;
-use qcos::service::Service;
+use rust_qcos::acl::{AclHeader, BucketAcl};
+use rust_qcos::bucket::Bucket;
+use rust_qcos::client::Client;
+use rust_qcos::request::ErrNo;
+use rust_qcos::service::Service;
 
 #[tokio::main]
 async fn main() {

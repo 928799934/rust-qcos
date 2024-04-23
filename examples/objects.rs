@@ -1,9 +1,9 @@
 //! 上传文件
 
-use qcos::acl::{AclHeader, ObjectAcl};
-use qcos::client::Client;
-use qcos::objects::{mime, Objects};
-use qcos::request::ErrNo;
+use rust_qcos::acl::{AclHeader, ObjectAcl};
+use rust_qcos::client::Client;
+use rust_qcos::objects::{mime, Objects};
+use rust_qcos::request::ErrNo;
 
 #[tokio::main]
 async fn main() {

@@ -7,9 +7,9 @@
 # How to use
 
 ```rust
-use qcos::acl::{AclHeader, ObjectAcl};
-use qcos::client::Client;
-use qcos::objects::{mime, ErrNo, Objects};
+use rust-qcos::acl::{AclHeader, ObjectAcl};
+use rust-qcos::client::Client;
+use rust-qcos::objects::{mime, ErrNo, Objects};
 
 #[tokio::main]
 async fn main() {
@@ -40,5 +40,5 @@ insert into your project's cargo.toml block next line
 
 ```
 [dependencies]
-qcos = "0.0.1"
+rust-qcos = "0.0.2"
 ```
