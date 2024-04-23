@@ -109,16 +109,16 @@ impl Bucket for Client {
         max_keys: i32,
     ) -> Response {
         let mut query = HashMap::new();
-        if prefix.len() > 0 {
+        if !prefix.is_empty() {
             query.insert("prefix".to_string(), prefix.to_string());
         }
-        if delimiter.len() > 0 {
+        if !delimiter.is_empty() {
             query.insert("delimiter".to_string(), delimiter.to_string());
         }
-        if encoding_type.len() > 0 {
+        if !encoding_type.is_empty() {
             query.insert("encoding-type".to_string(), encoding_type.to_string());
         }
-        if marker.len() > 0 {
+        if !marker.is_empty() {
             query.insert("marker".to_string(), marker.to_string());
         }
         if max_keys <= 1000 && max_keys > 0 {

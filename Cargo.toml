@@ -1,26 +1,26 @@
 [package]
 name = "qcos"
-version = "0.1.6"
+version = "0.0.1"
 edition = "2021"
-authors = ["bujnlc8 <75124771@qq.com>"]
+authors = ["an <928799934@qq.com>"]
 description = "provide basic interface encapsulation of Tencent Cloud Object Storage (cos)"
-repository = "https://github.com/bujnlc8/qcos"
+repository = "https://github.com/928799934/rust-qcos"
 license = "MIT"
 keywords = ["cos", "tengxunyun", "tencentcloud"]
 
 [dependencies]
-reqwest = { version = "0.11", features = ["json","stream"] }
-serde = {version="1", features = ["derive"]}
+reqwest = { version = "0.11", features = ["json", "stream"] }
+serde = { version = "1", features = ["derive"] }
 serde_json = "1.0"
 chrono = "0.4.19"
 ring = "0.16.20"
 urlencoding = "2.1.0"
 sha1 = "0.10.1"
 mime = "0.3.16"
-bytes ="1.1.0"
-quick-xml = {version = "0.23.0-alpha3", features = ["serialize"]}
+bytes = "1.1.0"
+quick-xml = { version = "0.23.0-alpha3", features = ["serialize"] }
 async-trait = "0.1.56"
 tokio = "1.2.0"
 
 [dev-dependencies]
-tokio = { version = "1.2.0", features=["full"] }
+tokio = { version = "1.2.0", features = ["full"] }

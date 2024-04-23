@@ -1,4 +1,4 @@
-[![qcos](https://github.com/bujnlc8/qcos/actions/workflows/qcos.yml/badge.svg?branch=master)](https://github.com/bujnlc8/qcos/actions/workflows/qcos.yml)
+[![qcos](https://github.com/928799934/rust-qcos/actions/workflows/qcos.yml/badge.svg?branch=master)](https://github.com/928799934/rust-qcos/actions/workflows/qcos.yml)
 
 **异步版本** `async`/`await`
 
@@ -21,7 +21,8 @@ async fn main() {
     );
     let mut acl_header = AclHeader::new();
     acl_header.insert_object_x_cos_acl(ObjectAcl::PublicRead);
-    let res = client.put_object("test.png", "test.png", mime::IMAGE_PNG, Some(&acl_header)).await;
+    let data = std::fs::read("test.png").unwrap();
+    let res = client.put_object(mime::IMAGE_PNG, "test.png", data, Some(&acl_header)).await;
     if res.error_no == ErrNo::SUCCESS {
         println!("success");
     } else {
@@ -33,13 +34,11 @@ async fn main() {
 
 如果操作成功，会打印出`success`, 否则会打印出失败原因。
 
-更多的例子请参考[examples](https://github.com/bujnlc8/qcos/tree/master/examples)。
-
 # Installation
 
 insert into your project's cargo.toml block next line
 
 ```
 [dependencies]
-qcos = "0.1.6"
+qcos = "0.0.1"
 ```

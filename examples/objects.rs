@@ -13,9 +13,10 @@ async fn main() {
         "bucket name",
         "region",
     );
+    let data = std::fs::read("Cargo.toml").unwrap();
     // 普通上传，无权限控制
     let res = client
-        .put_object("Cargo.toml", "Cargo.toml", mime::TEXT_PLAIN_UTF_8, None)
+        .put_object(mime::TEXT_PLAIN_UTF_8, "Cargo.toml", data.clone(), None)
         .await;
     if res.error_no == ErrNo::SUCCESS {
         println!("SUCCESS");
@@ -26,12 +27,7 @@ async fn main() {
     let mut acl = AclHeader::new();
     acl.insert_object_x_cos_acl(ObjectAcl::PRIVATE);
     let res = client
-        .put_object(
-            "Cargo.toml",
-            "Cargo.toml",
-            mime::TEXT_PLAIN_UTF_8,
-            Some(&acl),
-        )
+        .put_object(mime::TEXT_PLAIN_UTF_8, "Cargo.toml", data.clone(), None)
         .await;
     if res.error_no == ErrNo::SUCCESS {
         println!("SUCCESS");
@@ -54,20 +50,7 @@ async fn main() {
     } else {
         println!("{}", res.error_message);
     }
-    // 直接上传二进制流
-    let res = client
-        .put_object_binary(
-            std::fs::read("Cargo.toml").unwrap(),
-            "Cargo.toml",
-            mime::TEXT_PLAIN_UTF_8,
-            None,
-        )
-        .await;
-    if res.error_no == ErrNo::SUCCESS {
-        println!("SUCCESS");
-    } else {
-        println!("{}", res.error_message);
-    }
+
     // 删除文件 test/Cargo.toml
     let res = client.delete_object("test/Cargo.toml").await;
     if res.error_no == ErrNo::SUCCESS {

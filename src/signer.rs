@@ -43,7 +43,7 @@ impl<'a> Signer<'a> {
         let signature = hmac::sign(&key, key_time.as_bytes());
         let s: Vec<String> = signature
             .as_ref()
-            .into_iter()
+            .iter()
             .map(|x| format!("{:02x?}", x))
             .collect();
         s.join("")
@@ -58,9 +58,9 @@ impl<'a> Signer<'a> {
     }
 
     fn get_url_param_list(&self) -> String {
-        if let Some(ref query) = self.query {
+        if let Some(query) = self.query {
             let mut keys: Vec<String> = Vec::new();
-            let encoded_data = self.encode_data(&query);
+            let encoded_data = self.encode_data(query);
             for k in encoded_data.keys() {
                 keys.push(k.to_string());
             }
@@ -71,9 +71,9 @@ impl<'a> Signer<'a> {
     }
 
     fn get_http_parameters(&self) -> String {
-        if let Some(ref query) = self.query {
+        if let Some(query) = self.query {
             let mut keys: Vec<String> = Vec::new();
-            let encoded_data = self.encode_data(&query);
+            let encoded_data = self.encode_data(query);
             for k in encoded_data.keys() {
                 keys.push(k.to_string());
             }
@@ -81,7 +81,7 @@ impl<'a> Signer<'a> {
             let mut res: Vec<String> = Vec::new();
             for key in keys {
                 let v = encoded_data.get(&key).unwrap();
-                res.push(vec![key, v.to_string()].join("="));
+                res.push([key, v.to_string()].join("="));
             }
             return res.join("&");
         }
@@ -89,9 +89,9 @@ impl<'a> Signer<'a> {
     }
 
     fn get_header_list(&self) -> String {
-        if let Some(ref headers) = self.headers {
+        if let Some(headers) = self.headers {
             let mut keys: Vec<String> = Vec::new();
-            let encoded_data = self.encode_data(&headers);
+            let encoded_data = self.encode_data(headers);
             for k in encoded_data.keys() {
                 keys.push(k.to_string());
             }
@@ -102,9 +102,9 @@ impl<'a> Signer<'a> {
     }
 
     fn get_heades(&self) -> String {
-        if let Some(ref headers) = self.headers {
+        if let Some(headers) = self.headers {
             let mut keys: Vec<String> = Vec::new();
-            let encoded_data = self.encode_data(&headers);
+            let encoded_data = self.encode_data(headers);
             for k in encoded_data.keys() {
                 keys.push(k.to_string());
             }
@@ -112,7 +112,7 @@ impl<'a> Signer<'a> {
             let mut res: Vec<String> = Vec::new();
             for key in keys {
                 let v = encoded_data.get(&key).unwrap();
-                res.push(vec![key, v.to_string()].join("="));
+                res.push([key, v.to_string()].join("="));
             }
             return res.join("&");
         }
@@ -120,7 +120,7 @@ impl<'a> Signer<'a> {
     }
 
     fn get_http_string(&self) -> String {
-        let s = vec![
+        let s = [
             self.method.to_string(),
             decode(self.url_path).unwrap().to_string(),
             self.get_http_parameters(),
@@ -137,7 +137,7 @@ impl<'a> Signer<'a> {
         let result = hasher.finalize();
         let digest: Vec<String> = result
             .as_slice()
-            .into_iter()
+            .iter()
             .map(|x| format!("{:02x?}", x))
             .collect();
         s.push(digest.join(""));

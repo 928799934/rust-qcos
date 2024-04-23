@@ -17,9 +17,9 @@ pub trait Objects {
     /// 上传本地小文件
     async fn put_object(
         &self,
-        file_path: &str,
-        key: &str,
         content_type: mime::Mime,
+        key: &str,
+        data: Vec<u8>,
         acl_header: Option<&acl::AclHeader>,
     ) -> Response;
 
@@ -34,14 +34,8 @@ pub trait Objects {
         part_size: u64,
     ) -> Response;
 
-    /// 上传二进制流
-    async fn put_object_binary<T: Into<Body> + Send>(
-        &self,
-        file: T,
-        key: &str,
-        content_type: mime::Mime,
-        acl_header: Option<&acl::AclHeader>,
-    ) -> Response;
+    /// 判断文件是否存在
+    async fn head_object(&self, key: &str) -> Response;
 
     /// 删除文件
     async fn delete_object(&self, key: &str) -> Response;
@@ -106,35 +100,14 @@ impl Objects for client::Client {
     /// ```
     async fn put_object(
         &self,
-        file_path: &str,
-        key: &str,
         content_type: mime::Mime,
+        key: &str,
+        data: Vec<u8>,
         acl_header: Option<&acl::AclHeader>,
     ) -> Response {
-        let file = match tokio::fs::File::open(file_path).await {
-            Ok(file) => file,
-            Err(e) => {
-                return Response::new(
-                    ErrNo::IO,
-                    format!("打开文件失败: {}, {}", file_path, e),
-                    Default::default(),
-                )
-            }
-        };
-        // 设置为分块上传或者大于5G会启动分块上传
-        let file_size = match file.metadata().await {
-            Ok(meta) => meta.len() as usize,
-            Err(e) => {
-                return Response::new(
-                    ErrNo::IO,
-                    format!("获取文件大小失败: {}, {}", file_path, e),
-                    Default::default(),
-                )
-            }
-        };
         let mut headers = self.gen_common_headers();
         headers.insert("Content-Type".to_string(), content_type.to_string());
-        headers.insert("Content-Length".to_string(), file_size.to_string());
+        headers.insert("Content-Length".to_string(), data.len().to_string());
         let url_path = self.get_path_from_object_key(key);
         headers =
             self.get_headers_with_auth("put", url_path.as_str(), acl_header, Some(headers), None);
@@ -144,7 +117,7 @@ impl Objects for client::Client {
             Some(&headers),
             None,
             None,
-            Some(file),
+            Some(reqwest::Body::from(data)),
         )
         .await;
         self.make_response(resp)
@@ -202,7 +175,7 @@ impl Objects for client::Client {
             }
         };
         let mut part_number = 1;
-        let mut start;
+        let mut start: u64;
         let mut etag_map = HashMap::new();
         let upload_id = self
             .put_object_get_upload_id(key, &content_type, storage_class, acl_header)
@@ -233,7 +206,7 @@ impl Objects for client::Client {
             if file_size - size - start <= 1024 * 1024 {
                 size = file_size - start;
             }
-            if let Err(e) = file.seek(SeekFrom::Start(start as u64)).await {
+            if let Err(e) = file.seek(SeekFrom::Start(start)).await {
                 // 调用清理
                 self.abort_object_part(key, upload_id.as_str()).await;
                 return Response::new(
@@ -272,53 +245,21 @@ impl Objects for client::Client {
         }
     }
 
-    /// 上传二进制流
-    /// 见[官网文档](https://cloud.tencent.com/document/product/436/7749)
-    /// # Examples
-    /// ```
-    /// use qcos::client::Client;
-    /// use qcos::objects::Objects;
-    /// use mime;
-    /// use qcos::acl::{AclHeader, ObjectAcl};
-    /// async {
-    /// let mut acl_header = AclHeader::new();
-    /// acl_header.insert_object_x_cos_acl(ObjectAcl::AuthenticatedRead);
-    /// let client = Client::new("foo", "bar", "qcloudtest-1256650966", "ap-guangzhou");
-    /// let buffer = std::fs::read("Cargo.toml").unwrap();
-    /// let res = client.put_object_binary(buffer, "Cargo.toml", mime::TEXT_PLAIN_UTF_8, Some(&acl_header)).await;
-    /// assert!(res.error_message.contains("403"));
-    /// };
-    /// ```
-    async fn put_object_binary<T: Into<Body> + Send>(
-        &self,
-        file: T,
-        key: &str,
-        content_type: mime::Mime,
-        acl_header: Option<&acl::AclHeader>,
-    ) -> Response {
-        let body: Body = file.into();
-        let bytes = body.as_bytes();
-        if bytes.is_none() {
-            return Response::new(ErrNo::IO, "不是内存对象".to_owned(), Default::default());
-        }
-        let file_size = bytes.unwrap().len();
-        let mut headers = self.gen_common_headers();
-        headers.insert("Content-Type".to_string(), content_type.to_string());
-        headers.insert("Content-Length".to_string(), file_size.to_string());
+    async fn head_object(&self, key: &str) -> Response {
         let url_path = self.get_path_from_object_key(key);
-        headers =
-            self.get_headers_with_auth("put", url_path.as_str(), acl_header, Some(headers), None);
-        let resp = Request::put(
+        let headers = self.get_headers_with_auth("head", url_path.as_str(), None, None, None);
+        let resp = Request::head(
             self.get_full_url_from_path(url_path.as_str()).as_str(),
             None,
             Some(&headers),
-            None,
-            None,
-            Some(body),
         )
         .await;
-        self.make_response(resp)
+        match resp {
+            Ok(e) => e,
+            Err(e) => e,
+        }
     }
+
     /// 删除文件
     /// 见[官网文档](https://cloud.tencent.com/document/product/436/7743)
     /// # Examples
@@ -517,7 +458,7 @@ impl Objects for client::Client {
         keys.sort();
         for k in keys {
             parts.push(Part {
-                part_number: k.clone(),
+                part_number: *k,
                 etag: etag_map[&k].clone(),
             })
         }
