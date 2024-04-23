@@ -4,8 +4,8 @@
 基本用法:
 
 ```
- use qcos::client::Client;
- use qcos::objects::Objects;
+ use rust_qcos::client::Client;
+ use rust_qcos::objects::Objects;
  use mime;
 
  #[tokio::main]

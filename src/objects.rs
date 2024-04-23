@@ -86,10 +86,10 @@ impl Objects for client::Client {
     /// 见[官网文档](https://cloud.tencent.com/document/product/436/7749)
     /// # Examples
     /// ```
-    /// use qcos::client::Client;
-    /// use qcos::objects::Objects;
+    /// use rust_qcos::client::Client;
+    /// use rust_qcos::objects::Objects;
     /// use mime;
-    /// use qcos::acl::{AclHeader, ObjectAcl};
+    /// use rust_qcos::acl::{AclHeader, ObjectAcl};
     /// async {
     /// let mut acl_header = AclHeader::new();
     /// acl_header.insert_object_x_cos_acl(ObjectAcl::AuthenticatedRead);
@@ -127,10 +127,10 @@ impl Objects for client::Client {
     /// 见[官网文档](https://cloud.tencent.com/document/product/436/7749)
     /// # Examples
     /// ```
-    /// use qcos::client::Client;
-    /// use qcos::objects::Objects;
+    /// use rust_qcos::client::Client;
+    /// use rust_qcos::objects::Objects;
     /// use mime;
-    /// use qcos::acl::{AclHeader, ObjectAcl};
+    /// use rust_qcos::acl::{AclHeader, ObjectAcl};
     /// async {
     /// let mut acl_header = AclHeader::new();
     /// acl_header.insert_object_x_cos_acl(ObjectAcl::AuthenticatedRead);
@@ -264,8 +264,8 @@ impl Objects for client::Client {
     /// 见[官网文档](https://cloud.tencent.com/document/product/436/7743)
     /// # Examples
     /// ```
-    /// use qcos::client::Client;
-    /// use qcos::objects::Objects;
+    /// use rust_qcos::client::Client;
+    /// use rust_qcos::objects::Objects;
     /// async {
     /// let client = Client::new("foo", "bar", "qcloudtest-1256650966", "ap-guangzhou");
     /// let res = client.delete_object("Cargo.toml").await;
@@ -293,8 +293,8 @@ impl Objects for client::Client {
     /// 见[官网文档](https://cloud.tencent.com/document/product/436/7753)
     /// # Examples
     /// ```
-    /// use qcos::client::Client;
-    /// use qcos::objects::Objects;
+    /// use rust_qcos::client::Client;
+    /// use rust_qcos::objects::Objects;
     /// async {
     /// let client = Client::new("foo", "bar", "qcloudtest-1256650966", "ap-guangzhou");
     /// let res = client.get_object_binary("Cargo.toml").await;
@@ -317,8 +317,8 @@ impl Objects for client::Client {
     /// 见[官网文档](https://cloud.tencent.com/document/product/436/7753)
     /// # Examples
     /// ```
-    /// use qcos::client::Client;
-    /// use qcos::objects::Objects;
+    /// use rust_qcos::client::Client;
+    /// use rust_qcos::objects::Objects;
     /// async {
     /// let client = Client::new("foo", "bar", "qcloudtest-1256650966", "ap-guangzhou");
     /// let res = client.get_object("Cargo.toml", "Cargo.toml").await;

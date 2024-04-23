@@ -5,7 +5,7 @@ use crate::signer::Signer;
 /// 接口请求Client
 /// # Examples
 /// ```
-/// use qcos::client::Client;
+/// use rust_qcos::client::Client;
 /// let client = Client::new("secrect_id", "secrect_key", "bucket", "region");
 /// assert_eq!(client.get_host(), "bucket.cos.region.myqcloud.com");
 ///```
