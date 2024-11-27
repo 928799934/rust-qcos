@@ -12,6 +12,7 @@ use crate::signer::Signer;
 use chrono::Utc;
 use std::collections::HashMap;
 
+#[derive(Clone)]
 pub struct Client {
     secrect_id: String,
     secrect_key: String,

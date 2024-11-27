@@ -81,9 +81,9 @@ pub enum Method {
 /// use rust_qcos::request::ErrNo;
 /// println!("{:#?}", ErrNo::OTHER);
 /// ```
-impl ToString for ErrNo {
-    fn to_string(&self) -> String {
-        format!("{:#?}", self)
+impl std::fmt::Display for ErrNo {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:#?}", self)
     }
 }
 
@@ -124,7 +124,7 @@ impl Display for Response {
         write!(
             f,
             r#"{{"error_no": "{}","error_message": "{}","result": "{}"}}"#,
-            self.error_no.to_string(),
+            self.error_no,
             self.error_message,
             String::from_utf8_lossy(&self.result[..])
         )

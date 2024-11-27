@@ -460,7 +460,7 @@ impl Objects for client::Client {
         for k in keys {
             parts.push(Part {
                 part_number: *k,
-                etag: etag_map[&k].clone(),
+                etag: etag_map[k].clone(),
             })
         }
         let complete = CompleteMultipartUpload { part: parts };
